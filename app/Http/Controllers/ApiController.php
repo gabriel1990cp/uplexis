@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Sintegra;
-
-
+use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 {
@@ -49,34 +48,21 @@ class ApiController extends Controller
 
         preg_match_all($regexValor, utf8_encode($resultado), $valor);
 
+        if (empty($titulo[3])) {
 
+            return false;
 
-        $cliente1 = array(
-            'codigo'   => '001',
-            'nome'     => 'William',
-            'telefone' => '012 9999-6352'
-        );
+        } else {
+            $dados = array();
 
+            foreach ($titulo[3] as $key => $row) {
+                $dados[$row] = utf8_encode($valor[0][$key]);
+            }
 
+            $dados_json = json_encode($dados);
 
-
-        $dados = array();
-       foreach ($titulo[3] as $key => $row){
-           $dados[$row] = utf8_encode($valor[0][$key]);
-       }
-
-
-
-
-
-        $dados_json = json_encode($dados);
-
-
-
-
-
-
-        return $dados_json;
+            return $dados_json;
+        }
     }
 
     public function processarCNPJ(Request $request)
@@ -91,8 +77,8 @@ class ApiController extends Controller
                 'cnpj' => 'required'
             ]);
 
-            if (empty($retorno)){
-                return redirect('home')->with('message', 'Ocorreu um erro!');
+            if ($retorno == false) {
+                return redirect('consultarCNPJ')->with('message', 'Ocorreu um erro!');
             }
 
             $sintegra = new Sintegra();
@@ -102,6 +88,21 @@ class ApiController extends Controller
             $sintegra->save();
             return redirect('home')->with('message', 'Cadastrado realizado com sucesso!');
 
+        } else {
+            return redirect('home');
+        }
+    }
+
+    public function servicoApi($cnpj, $usuario, $senha)
+    {
+        $senha = $senha;
+
+        $retorno = DB::table('users')->where('name', strip_tags($usuario))->first();
+
+        if ($retorno) {
+
+            $retorno = $this->api(strip_tags($cnpj));
+            echo $retorno;
         }
     }
 }

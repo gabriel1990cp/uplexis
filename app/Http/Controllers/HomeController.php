@@ -39,7 +39,7 @@ class HomeController extends Controller
 
         $produtos = Sintegra::find($id);
         if($produtos->delete()){
-            return 1;
+             redirect('home')->with('message', 'Registro deletado com sucesso!');
         }
 
     }

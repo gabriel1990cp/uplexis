@@ -26,3 +26,5 @@ Route::get('/consultarCNPJ', 'HomeController@consultarCNPJ')->name('consultarCNP
 Route::post('/processarCNPJ', 'ApiController@processarCNPJ')->name('processarCNPJ');
 
 Route::GET('/deletar', 'HomeController@deletar')->name('deletar');
+
+Route::GET('/api/{cnpj}/{usuario}/{senha}', 'ApiController@servicoApi')->name('servicoApi');
