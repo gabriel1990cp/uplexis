@@ -24,15 +24,23 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
-    }
-
-    public function listagem()
-    {
-        echo "chegou!";
-        exit();
-
         $sintegra = Sintegra::all();
         return view('registros',['registros' => $sintegra]);
+    }
+
+    public function consultarCNPJ()
+    {
+        return view('consultar');
+    }
+
+    public function deletar()
+    {
+        $id = (int) $_GET['id'];
+
+        $produtos = Sintegra::find($id);
+        if($produtos->delete()){
+            return 1;
+        }
+
     }
 }

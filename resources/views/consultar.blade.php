@@ -5,19 +5,10 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Dashboard</div>
+                    <div class="panel-heading">Consultar</div>
 
                     <div class="panel-body">
-                        <form action="{{ url('cnpj') }}" method="post" name="form_cnpj" id="form_cnpj">
-                            <div class="form-group col-md-12">
-                                @if (Session::has('message'))
-                                    <div class="alert alert-info">{{ Session::get('message') }}</div>
-                                @endif
-
-                                @foreach($errors->all() as $error)
-                                    <li>{{$error}}</li>
-                                @endforeach
-                            </div>
+                        <form action="{{ url('processarCNPJ') }}" method="post" name="form_cnpj" id="form_cnpj">
                             <div class="form-group col-md-12">
                                 <label for="cnpj">CPNJ</label>
                                 <input type="text" class="form-control" id="cnpj" name="cnpj"
@@ -27,7 +18,7 @@
                             <div class="form-group col-md-12">
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                 <button type="submit" class="btn btn-primary">Consultar</button>
-                                <a class="btn btn-danger" href="{{ url('/') }}">Cancelar</a>
+                                <a class="btn btn-danger" href="{{ url('/home') }}">Cancelar</a>
                             </div>
                         </form>
                     </div>

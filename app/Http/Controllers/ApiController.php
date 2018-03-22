@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Sintegra;
 
 
+
 class ApiController extends Controller
 {
     protected function api($cnpj)
@@ -40,25 +41,45 @@ class ApiController extends Controller
 
         curl_close($ch);
 
-        $re = '/<td .*?class=".*?">(.*)<\/td>/i';
+        $regexTitulo = '/<td (.*)class="titulo"(.*)>(.*)<\/td>/i';
 
-        preg_match_all($re, $resultado, $matches);
+        preg_match_all($regexTitulo, utf8_encode($resultado), $titulo);
+
+        $regexValor = '/<td (.*)class="valor"(.*)>(.*)<\/td>/i';
+
+        preg_match_all($regexValor, utf8_encode($resultado), $valor);
 
 
-        // Array com dados
+
         $cliente1 = array(
             'codigo'   => '001',
             'nome'     => 'William',
             'telefone' => '012 9999-6352'
         );
 
-        // Tranforma o array $dados em JSON
-        $dados_json = json_encode($cliente1);
+
+
+
+        $dados = array();
+       foreach ($titulo[3] as $key => $row){
+           $dados[$row] = utf8_encode($valor[0][$key]);
+       }
+
+
+
+
+
+        $dados_json = json_encode($dados);
+
+
+
+
+
 
         return $dados_json;
     }
 
-    public function cnpj(Request $request)
+    public function processarCNPJ(Request $request)
     {
         if (Auth::check()) {
 
@@ -70,12 +91,16 @@ class ApiController extends Controller
                 'cnpj' => 'required'
             ]);
 
+            if (empty($retorno)){
+                return redirect('home')->with('message', 'Ocorreu um erro!');
+            }
+
             $sintegra = new Sintegra();
             $sintegra->id_usuario = Auth::user()->id;
             $sintegra->cnpj = $cnpj;
             $sintegra->json = $retorno;
             $sintegra->save();
-            return redirect('listagem')->with('message', 'Cadastrado realizado com sucesso!');
+            return redirect('home')->with('message', 'Cadastrado realizado com sucesso!');
 
         }
     }

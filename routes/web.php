@@ -21,6 +21,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::post('/cnpj', 'ApiController@cnpj')->name('cnpj');
+Route::get('/consultarCNPJ', 'HomeController@consultarCNPJ')->name('consultarCNPJ');
 
-Route::get('/cnpj', 'ApiController@cnpj')->name('cnpj');
+Route::post('/processarCNPJ', 'ApiController@processarCNPJ')->name('processarCNPJ');
+
+Route::GET('/deletar', 'HomeController@deletar')->name('deletar');
