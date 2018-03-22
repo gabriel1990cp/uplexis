@@ -11,6 +11,14 @@ class ApiController extends Controller
 {
     protected function api($cnpj)
     {
+        /*
+         * Realiza o CURL no site setado na variavel url, faz a consulta e retorna os dados do HTML
+         *
+         * @access public
+         * @param string $cnpj
+         * @return json
+         */
+
         $url = 'http://www.sintegra.es.gov.br/resultado.php';
 
         $campos = array(
@@ -67,6 +75,14 @@ class ApiController extends Controller
 
     public function processarCNPJ(Request $request)
     {
+        /*
+         * Consulta a API e salva o retorno na base de dados
+         *
+         * @access public
+         * @param string $request
+         * @return cadastro
+         */
+
         if (Auth::check()) {
 
             $cnpj = $request->input('cnpj');
@@ -95,14 +111,30 @@ class ApiController extends Controller
 
     public function servicoApi($cnpj, $usuario, $senha)
     {
+        /*
+         * API para terceiros realizar consulta
+         *
+         * @access public
+         * @param string $cnpj,$usuario,$senha
+         * @return json
+         */
+
         $senha = $senha;
 
-        $retorno = DB::table('users')->where('name', strip_tags($usuario))->first();
+        $verificaUsuario = DB::table('users')->where('name', strip_tags($usuario))->first();
 
-        if ($retorno) {
+        if ($verificaUsuario) {
 
             $retorno = $this->api(strip_tags($cnpj));
-            echo $retorno;
+            $dados_json = json_encode(strip_tags($retorno));
+
+            return $dados_json;
+
+        } else {
+
+            echo "Verifique os dados de acesso !";
+
         }
+
     }
 }

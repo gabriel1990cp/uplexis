@@ -24,8 +24,9 @@ class HomeController extends Controller
      */
     public function index()
     {
+
         $sintegra = Sintegra::all();
-        return view('registros',['registros' => $sintegra]);
+        return view('registros', ['registros' => $sintegra]);
     }
 
     public function consultarCNPJ()
@@ -35,11 +36,11 @@ class HomeController extends Controller
 
     public function deletar()
     {
-        $id = (int) $_GET['id'];
+        $id = (int)$_GET['id'];
 
         $produtos = Sintegra::find($id);
-        if($produtos->delete()){
-             redirect('home')->with('message', 'Registro deletado com sucesso!');
+        if ($produtos->delete()) {
+            redirect('home')->with('message', 'Registro deletado com sucesso!');
         }
 
     }
