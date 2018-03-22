@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Sintegra;
 
 class HomeController extends Controller
 {
@@ -24,5 +25,14 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+    }
+
+    public function listagem()
+    {
+        echo "chegou!";
+        exit();
+
+        $sintegra = Sintegra::all();
+        return view('registros',['registros' => $sintegra]);
     }
 }

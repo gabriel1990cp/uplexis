@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Sintegra;
+
 
 class ApiController extends Controller
 {
     protected function api($cnpj)
     {
-        header('Content-type: application/json');
-
         $url = 'http://www.sintegra.es.gov.br/resultado.php';
 
         $campos = array(
@@ -52,7 +52,6 @@ class ApiController extends Controller
             'telefone' => '012 9999-6352'
         );
 
-
         // Tranforma o array $dados em JSON
         $dados_json = json_encode($cliente1);
 
@@ -67,20 +66,16 @@ class ApiController extends Controller
 
             $retorno = $this->api($cnpj);
 
-            $vendedorCad = new VendedorCad();
+            $this->validate($request, [
+                'cnpj' => 'required'
+            ]);
 
-            $vendedor = $request->input('vendedor');
-            $valor_comissao = str_replace_last('.', '',$request->input('valor_comissao'));
-            $valor_comissao = str_replace_last(',', '.',$valor_comissao);
-
-            $vendedorCad = $vendedorCad->insert(array('vendedor' => $vendedor, 'valor_comissao' => $valor_comissao));
-
-            if ($vendedorCad)
-            {
-                return redirect('/');
-            }else {
-                return redirect('cadastrar');
-            }
+            $sintegra = new Sintegra();
+            $sintegra->id_usuario = Auth::user()->id;
+            $sintegra->cnpj = $cnpj;
+            $sintegra->json = $retorno;
+            $sintegra->save();
+            return redirect('listagem')->with('message', 'Cadastrado realizado com sucesso!');
 
         }
     }
